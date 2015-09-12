@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate {
+class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, CLLocationManagerDelegate {
     
     let username = "Johan"
     let mqttUsername = "playground"
@@ -30,6 +30,10 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate {
         mapView.showsUserLocation = true
         mqttSession = MQTTSession(clientId: deviceID, userName: mqttUsername, password: mqttPassword)
         mqttSession.delegate = self
+        mqttSession.connectToHost(mqttHostname, port: UInt32(mqttPort))
+        
+        locationManager.delegate = self
+        locationManager.requestAlwaysAuthorization()
     }
 
     func publishLocation(coordinate: CLLocationCoordinate2D) {
@@ -43,7 +47,6 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate {
     func newMessage(session: MQTTSession!, data: NSData!, onTopic topic: String!, qos: MQTTQosLevel, retained: Bool, mid: UInt32) {
         println("Message received")
     }
-    
     
     
     func handleEvent(session: MQTTSession!, event eventCode: MQTTSessionEvent, error: NSError!) {

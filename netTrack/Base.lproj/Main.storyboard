@@ -4,7 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--netTrack-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="netTrack" customModuleProvider="target" sceneMemberID="viewController">
@@ -28,7 +28,7 @@
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="8Rh-hw-4Dt" secondAttribute="bottom" id="qAP-ls-VST"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="Owh-jv-ZIf"/>
+                    <navigationItem key="navigationItem" title="netTrack" id="Owh-jv-ZIf"/>
                     <connections>
                         <outlet property="mapView" destination="8Rh-hw-4Dt" id="TMx-7t-nJT"/>
                     </connections>
