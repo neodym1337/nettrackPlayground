@@ -17,7 +17,7 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, 
     let mqttUsername = "playground"
     let mqttPassword = "edge"
     let mqttTopic = "netlight"
-    let mqttPort = 1883
+    let mqttPort : UInt32 = 1883
     let mqttHostname = "ec2-54-93-85-51.eu-central-1.compute.amazonaws.com"
     var mqttSession : MQTTSession!
     let userDeviceID = UIDevice.currentDevice().identifierForVendor.UUIDString
@@ -31,16 +31,14 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, 
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.showsUserLocation = true
-        
         setupMqtt()
         setupLocationManager()
-       
     }
     
     func setupMqtt() {
         mqttSession = MQTTSession(clientId: userDeviceID, userName: mqttUsername, password: mqttPassword)
         mqttSession.delegate = self
-        mqttSession.connectToHost(mqttHostname, port: UInt32(mqttPort))
+        mqttSession.connectToHost(mqttHostname, port: mqttPort)
     }
     
     func setupLocationManager() {
@@ -67,7 +65,7 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, 
             break
         case CLAuthorizationStatus.AuthorizedAlways, CLAuthorizationStatus.AuthorizedWhenInUse:
             println(".Authorized")
-            locationManager.startUpdatingLocation()
+            locationManager.startUpdatingLocation() //Once authorized, start updating locations
             break
         case .Denied:
             println(".Denied")
@@ -85,7 +83,7 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, 
         let payload = "{\"deviceID\":\"\(userDeviceID)\",\"name\":\"\(username)\",\"lat\":\(coordinate.latitude),\"lng\":\(coordinate.longitude)}"
         
         let data = payload.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-        mqttSession.publishData(data, onTopic: mqttTopic)
+        mqttSession.publishData(data, onTopic: mqttTopic) //Publish encoded payload on our topic
     }
     
     //MARK: MQTTSessionDelegate
@@ -103,20 +101,25 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, 
             println("Error parsing json")
         }
         
+        let newAnnotation = annotationFromJson(json)
+        
+        if let previousUser = trackedUsers[newAnnotation.deviceID] { //Already have existing annotation
+            previousUser.coordinate = newAnnotation.coordinate // Set new coordinate
+        }else { //New user, add to map
+            trackedUsers[newAnnotation.deviceID] = newAnnotation
+            self.mapView.addAnnotation(newAnnotation)
+        }
+    }
+    
+    func annotationFromJson(json : JSON) -> UserAnnotation {
+        
         let name = json["name"].string!
         let deviceID = json["deviceID"].string!
         let lat = json["lat"].double!
         let lng = json["lng"].double!
         let coordinate = CLLocationCoordinate2DMake(lat, lng)
         
-        let userAnnotation = UserAnnotation(coordinate: coordinate, name: name, deviceID: deviceID)
-        
-        if let previousUser = trackedUsers[deviceID] { //Already have existing user
-            previousUser.coordinate = coordinate
-        }else { //New user
-            trackedUsers[deviceID] = userAnnotation
-            self.mapView.addAnnotation(userAnnotation)
-        }
+        return UserAnnotation(coordinate: coordinate, name: name, deviceID: deviceID)
     }
     
     func handleEvent(session: MQTTSession!, event eventCode: MQTTSessionEvent, error: NSError!) {
