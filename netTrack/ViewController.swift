@@ -51,10 +51,10 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, 
     //MARK: CLLocationManagerDelegate
     
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
-        let location = manager.location
+        let location = manager.location //Take last known location
         let coordinate = location.coordinate
         println("Updated location: lat \(coordinate.latitude) lng \(coordinate.longitude)")
-        publishLocation(location)
+        publishLocation(coordinate)
     }
     
     func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
@@ -77,48 +77,54 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, 
     }
 
     //MARK: MQTT Publish
-    func publishLocation(location: CLLocation) {
-        
-        let coordinate = location.coordinate
+    func publishLocation(coordinate: CLLocationCoordinate2D) {
+        let payloadData = createPayloadFromLocation(coordinate)
+        mqttSession.publishData(payloadData, onTopic: mqttTopic) //Publish encoded payload on our topic
+    }
+    
+    func createPayloadFromLocation(coordinate : CLLocationCoordinate2D) -> NSData {
+        // Create payload json using our new location together with the data needed for other clients to identify us
         let payload = "{\"deviceID\":\"\(userDeviceID)\",\"name\":\"\(username)\",\"lat\":\(coordinate.latitude),\"lng\":\(coordinate.longitude)}"
-        
-        let data = payload.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-        mqttSession.publishData(data, onTopic: mqttTopic) //Publish encoded payload on our topic
+        return payload.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
     }
     
     //MARK: MQTTSessionDelegate
     func newMessage(session: MQTTSession!, data: NSData!, onTopic topic: String!, qos: MQTTQosLevel, retained: Bool, mid: UInt32) {
-        println("Message received")
         
-        //OBS: Disgard message coming from self deviceID since we are publishing and subscribing to the same topic
+        //OBS: Disregard message coming from self deviceID since we are publishing and subscribing to the same topic
         let json = JSON(data: data)
         if let receivedDeviceID = json["deviceID"].string  {
             if receivedDeviceID == userDeviceID  {
-                println("Message from self, disregard")
+                //println("Message from self, do not use")
                 return;
             }
         }else {
             println("Error parsing json")
         }
         
-        let newAnnotation = annotationFromJson(json)
+        let newAnnotation = createAnnotationFromJson(json)
+        println("Message received from \(newAnnotation.title)")
         
-        if let previousUser = trackedUsers[newAnnotation.deviceID] { //Already have existing annotation
-            previousUser.coordinate = newAnnotation.coordinate // Set new coordinate
-        }else { //New user, add to map
-            trackedUsers[newAnnotation.deviceID] = newAnnotation
-            self.mapView.addAnnotation(newAnnotation)
+        processAnnotation(newAnnotation)
+    }
+    
+    func processAnnotation(annotation: UserAnnotation) {
+        if let previousUser = trackedUsers[annotation.deviceID] {
+            //If we have already added an annotation from this user to the map we just have to update the coordinate
+            previousUser.coordinate = annotation.coordinate // Set new coordinate
+        }else {
+            // If its the first time we receive a message from this user we should add it to the map
+            trackedUsers[annotation.deviceID] = annotation
+            self.mapView.addAnnotation(annotation)
         }
     }
     
-    func annotationFromJson(json : JSON) -> UserAnnotation {
-        
+    func createAnnotationFromJson(json : JSON) -> UserAnnotation {
         let name = json["name"].string!
         let deviceID = json["deviceID"].string!
         let lat = json["lat"].double!
         let lng = json["lng"].double!
         let coordinate = CLLocationCoordinate2DMake(lat, lng)
-        
         return UserAnnotation(coordinate: coordinate, name: name, deviceID: deviceID)
     }
     
