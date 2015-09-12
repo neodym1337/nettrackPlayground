@@ -9,6 +9,7 @@
 import UIKit
 import MapKit
 import CoreLocation
+//import SwiftyJSON
 
 class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, CLLocationManagerDelegate {
     
@@ -20,6 +21,24 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, 
     let mqttHostname = "ec2-54-93-85-51.eu-central-1.compute.amazonaws.com"
     var mqttSession : MQTTSession!
     let deviceID = UIDevice.currentDevice().identifierForVendor.UUIDString
+    
+    var trackedUsers = [String:AnyObject]() //Create empty dictionary, format 
+    /*
+
+    {
+        deviceID: {
+                    name: String
+                    lat: Float
+                    lng: Float
+                },
+        deviceID: {
+                    name: String
+                    lat: Float
+                    lng: Float
+                    }
+    }
+
+    */
     
     @IBOutlet weak var mapView: MKMapView!
     
@@ -82,6 +101,16 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, 
     //MARK: MQTTSessionDelegate
     func newMessage(session: MQTTSession!, data: NSData!, onTopic topic: String!, qos: MQTTQosLevel, retained: Bool, mid: UInt32) {
         println("Message received")
+        
+        //OBS: Disgard message coming from self deviceID since we are publishing and subscribing to the same topic
+        let json = JSON(data: data)
+        if let receivedDeviceID = json["deviceID"].string  {
+            if receivedDeviceID == deviceID  {
+                println("Message from self, disregard")
+            }
+        }
+        
+        
     }
     
     func handleEvent(session: MQTTSession!, event eventCode: MQTTSessionEvent, error: NSError!) {

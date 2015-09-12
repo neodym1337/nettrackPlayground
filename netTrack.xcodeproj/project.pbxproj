@@ -13,6 +13,7 @@
 		042F1F731BA4415500F7D4AC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 042F1F721BA4415500F7D4AC /* Images.xcassets */; };
 		042F1F761BA4415500F7D4AC /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 042F1F741BA4415500F7D4AC /* LaunchScreen.xib */; };
 		042F1F821BA4415500F7D4AC /* netTrackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042F1F811BA4415500F7D4AC /* netTrackTests.swift */; };
+		0470395A1BA44F9200F5A226 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047039591BA44F9200F5A226 /* SwiftyJSON.swift */; };
 		69D2BD918597FE845FC0096C /* libPods-netTrack.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64C6D853DAFEB5452FEA4218 /* libPods-netTrack.a */; };
 /* End PBXBuildFile section */
 
@@ -38,6 +39,7 @@
 		042F1F801BA4415500F7D4AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		042F1F811BA4415500F7D4AC /* netTrackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = netTrackTests.swift; sourceTree = "<group>"; };
 		047039551BA441A200F5A226 /* netTrack-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "netTrack-Bridging-Header.h"; sourceTree = "<group>"; };
+		047039591BA44F9200F5A226 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		0DC420534558FFDD350629E2 /* Pods-netTrack.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-netTrack.debug.xcconfig"; path = "Pods/Target Support Files/Pods-netTrack/Pods-netTrack.debug.xcconfig"; sourceTree = "<group>"; };
 		64C6D853DAFEB5452FEA4218 /* libPods-netTrack.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-netTrack.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA723F909A3B7183621379AA /* Pods-netTrack.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-netTrack.release.xcconfig"; path = "Pods/Target Support Files/Pods-netTrack/Pods-netTrack.release.xcconfig"; sourceTree = "<group>"; };
@@ -85,6 +87,7 @@
 		042F1F681BA4415500F7D4AC /* netTrack */ = {
 			isa = PBXGroup;
 			children = (
+				047039591BA44F9200F5A226 /* SwiftyJSON.swift */,
 				042F1F6B1BA4415500F7D4AC /* AppDelegate.swift */,
 				042F1F6D1BA4415500F7D4AC /* ViewController.swift */,
 				042F1F6F1BA4415500F7D4AC /* Main.storyboard */,
@@ -273,6 +276,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0470395A1BA44F9200F5A226 /* SwiftyJSON.swift in Sources */,
 				042F1F6E1BA4415500F7D4AC /* ViewController.swift in Sources */,
 				042F1F6C1BA4415500F7D4AC /* AppDelegate.swift in Sources */,
 			);
