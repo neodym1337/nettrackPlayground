@@ -22,21 +22,7 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, 
     var mqttSession : MQTTSession!
     let userDeviceID = UIDevice.currentDevice().identifierForVendor.UUIDString
     
-    var trackedUsers = [String: [String : AnyObject]]() //Create empty dictionary, format
-    /*
-
-    {
-        deviceID: {
-                    name: String,
-                    coordinate: CLLocationCoord
-                },
-        deviceID: {
-                    name: String,
-                    coordinate: CLLocationCoord
-                    }
-    }
-
-    */
+    var trackedUsers = [String: UserAnnotation]() //Create dictonary to store annotations for tracked users
     
     @IBOutlet weak var mapView: MKMapView!
     
@@ -46,11 +32,18 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, 
         super.viewDidLoad()
         mapView.showsUserLocation = true
         
-        //Setup mqtt and connect
+        setupMqtt()
+        setupLocationManager()
+       
+    }
+    
+    func setupMqtt() {
         mqttSession = MQTTSession(clientId: userDeviceID, userName: mqttUsername, password: mqttPassword)
         mqttSession.delegate = self
         mqttSession.connectToHost(mqttHostname, port: UInt32(mqttPort))
-        
+    }
+    
+    func setupLocationManager() {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest //Best accuracy for tracking indoors
         locationManager.distanceFilter = 1.0 //Filter location update difference 1 m
@@ -62,7 +55,6 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, 
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
         let location = manager.location
         let coordinate = location.coordinate
-        
         println("Updated location: lat \(coordinate.latitude) lng \(coordinate.longitude)")
         publishLocation(location)
     }
@@ -115,16 +107,16 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, 
         let deviceID = json["deviceID"].string!
         let lat = json["lat"].double!
         let lng = json["lng"].double!
+        let coordinate = CLLocationCoordinate2DMake(lat, lng)
         
-        let location : CLLocation = CLLocation(latitude: lat, longitude: lng)
-        let user : [String: AnyObject] = ["name": name, "location": location]
+        let userAnnotation = UserAnnotation(coordinate: coordinate, name: name, deviceID: deviceID)
         
         if let previousUser = trackedUsers[deviceID] { //Already have existing user
-            
+            previousUser.coordinate = coordinate
         }else { //New user
-            trackedUsers[deviceID] = user
+            trackedUsers[deviceID] = userAnnotation
+            self.mapView.addAnnotation(userAnnotation)
         }
-        
     }
     
     func handleEvent(session: MQTTSession!, event eventCode: MQTTSessionEvent, error: NSError!) {
