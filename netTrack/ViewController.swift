@@ -20,21 +20,19 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, 
     let mqttPort = 1883
     let mqttHostname = "ec2-54-93-85-51.eu-central-1.compute.amazonaws.com"
     var mqttSession : MQTTSession!
-    let deviceID = UIDevice.currentDevice().identifierForVendor.UUIDString
+    let userDeviceID = UIDevice.currentDevice().identifierForVendor.UUIDString
     
-    var trackedUsers = [String:AnyObject]() //Create empty dictionary, format 
+    var trackedUsers = [String: [String : AnyObject]]() //Create empty dictionary, format
     /*
 
     {
         deviceID: {
-                    name: String
-                    lat: Float
-                    lng: Float
+                    name: String,
+                    coordinate: CLLocationCoord
                 },
         deviceID: {
-                    name: String
-                    lat: Float
-                    lng: Float
+                    name: String,
+                    coordinate: CLLocationCoord
                     }
     }
 
@@ -49,7 +47,7 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, 
         mapView.showsUserLocation = true
         
         //Setup mqtt and connect
-        mqttSession = MQTTSession(clientId: deviceID, userName: mqttUsername, password: mqttPassword)
+        mqttSession = MQTTSession(clientId: userDeviceID, userName: mqttUsername, password: mqttPassword)
         mqttSession.delegate = self
         mqttSession.connectToHost(mqttHostname, port: UInt32(mqttPort))
         
@@ -92,7 +90,7 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, 
     func publishLocation(location: CLLocation) {
         
         let coordinate = location.coordinate
-        let payload = "{\"deviceID\":\"\(deviceID)\",\"name\":\"\(username)\",\"lat\":\(coordinate.latitude),\"lng\":\(coordinate.longitude)}"
+        let payload = "{\"deviceID\":\"\(userDeviceID)\",\"name\":\"\(username)\",\"lat\":\(coordinate.latitude),\"lng\":\(coordinate.longitude)}"
         
         let data = payload.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
         mqttSession.publishData(data, onTopic: mqttTopic)
@@ -105,11 +103,27 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, 
         //OBS: Disgard message coming from self deviceID since we are publishing and subscribing to the same topic
         let json = JSON(data: data)
         if let receivedDeviceID = json["deviceID"].string  {
-            if receivedDeviceID == deviceID  {
+            if receivedDeviceID == userDeviceID  {
                 println("Message from self, disregard")
+                return;
             }
+        }else {
+            println("Error parsing json")
         }
         
+        let name = json["name"].string!
+        let deviceID = json["deviceID"].string!
+        let lat = json["lat"].double!
+        let lng = json["lng"].double!
+        
+        let location : CLLocation = CLLocation(latitude: lat, longitude: lng)
+        let user : [String: AnyObject] = ["name": name, "location": location]
+        
+        if let previousUser = trackedUsers[deviceID] { //Already have existing user
+            
+        }else { //New user
+            trackedUsers[deviceID] = user
+        }
         
     }
     
