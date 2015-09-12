@@ -3,6 +3,8 @@ iOS 8 app for MQTT tracking playground
 
 #Tutorial iOS
 
+* Checkout master
+
 * In Storyboard, add mapview and connect outlet
 
 * In ViewController.swift
