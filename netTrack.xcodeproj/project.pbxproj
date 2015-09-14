@@ -89,7 +89,7 @@
 		042F1F681BA4415500F7D4AC /* netTrack */ = {
 			isa = PBXGroup;
 			children = (
-				047039591BA44F9200F5A226 /* SwiftyJSON.swift */,
+				0470395D1BA757BC00F5A226 /* SwiftyJSON */,
 				042F1F6B1BA4415500F7D4AC /* AppDelegate.swift */,
 				0470395B1BA4595B00F5A226 /* UserAnnotation.swift */,
 				042F1F6D1BA4415500F7D4AC /* ViewController.swift */,
@@ -125,6 +125,14 @@
 				042F1F801BA4415500F7D4AC /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		0470395D1BA757BC00F5A226 /* SwiftyJSON */ = {
+			isa = PBXGroup;
+			children = (
+				047039591BA44F9200F5A226 /* SwiftyJSON.swift */,
+			);
+			name = SwiftyJSON;
 			sourceTree = "<group>";
 		};
 		481965150D8DA1D4F68AB29C /* Pods */ = {

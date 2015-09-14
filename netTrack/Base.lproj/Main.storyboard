@@ -4,7 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <scenes>
-        <!--netTrack-->
+        <!--NetTrack-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="netTrack" customModuleProvider="target" sceneMemberID="viewController">
@@ -15,23 +15,9 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="8Rh-hw-4Dt">
-                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
-                            </mapView>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="8Rh-hw-4Dt" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="5s8-ZW-9mK"/>
-                            <constraint firstAttribute="trailing" secondItem="8Rh-hw-4Dt" secondAttribute="trailing" id="eb5-St-Q8f"/>
-                            <constraint firstItem="8Rh-hw-4Dt" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="jHc-xu-BLT"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="8Rh-hw-4Dt" secondAttribute="bottom" id="qAP-ls-VST"/>
-                        </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="netTrack" id="Owh-jv-ZIf"/>
-                    <connections>
-                        <outlet property="mapView" destination="8Rh-hw-4Dt" id="TMx-7t-nJT"/>
-                    </connections>
+                    <navigationItem key="navigationItem" title="NetTrack" id="Owh-jv-ZIf"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
