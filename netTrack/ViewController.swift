@@ -59,14 +59,24 @@ class ViewController: UIViewController, MKMapViewDelegate, MQTTSessionDelegate, 
 
     //MARK: MQTT Helpers
 
-    /*
+    
     func createPayloadFromLocation(coordinate : CLLocationCoordinate2D)  {
         // Create payload json using our new location together with the data needed for other clients to identify us
         let payload = "{\"deviceID\":\"\(userDeviceID)\",\"name\":\"\(username)\",\"lat\":\(coordinate.latitude),\"lng\":\(coordinate.longitude)}"
         
         //return nsdata from payload
     }
-    */
+    
+    
+    func createAnnotationFromJson(json : JSON) -> UserAnnotation {
+        let name = json["name"].string!
+        let deviceID = json["deviceID"].string!
+        let lat = json["lat"].double!
+        let lng = json["lng"].double!
+        let coordinate = CLLocationCoordinate2DMake(lat, lng)
+        return UserAnnotation(coordinate: coordinate, name: name, deviceID: deviceID)
+    }
+
     
     //MARK: MQTTSessionDelegate
     
