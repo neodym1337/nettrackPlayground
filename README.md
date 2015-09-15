@@ -3,26 +3,27 @@ iOS 8 app for MQTT tracking playground
 
 #Tutorial iOS
 
-* Checkout master
+#Instructions
 
-* In Storyboard, add mapview and connect outlet
+*Add map view
 
-* In ViewController.swift
+*Get own device location (CLLocationManager authorize)
 
-* Create CLLocationManager
-* Set delegate and add delegate methods for authorizing and updating locations
-* Authorize
-* Start updating locations
+*Show own location on map (Use MKMapView build in location)
 
-* Create MQTTSession
-* Set delegate and add delegate methods for checking events and receiving messages
-* Connect
-* When receiveing connected status, subscribe to our topic
+*Connect to MQTT (MQTTSession)
+
+*Subscribe and receive message (MQTTSession)
+
+*Show location of received message (Parse JSON, create annotation)
+
+*Publish own location
+
+*Receive and show multiple locations on map
+
+*Show name of users above location pins on map (MKAnnotation callout)
 
 
-* When new location is received from locationmanager, create NSData payload with our details (coordinate, deviceID, name) and publish to our topic
-* When new message is received, discard messages that come from ourselves (we publish and subscribe to same topic)
-* Create UserAnnotation and add to map or update coordinate of existing annotation
 
 
 
