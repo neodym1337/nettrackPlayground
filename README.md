@@ -1,5 +1,7 @@
 # nettrackPlayground
-iOS 8 app for MQTT tracking playground
+iOS 8 app for MQTT tracking playground using MQTTClient https://github.com/ckrey/MQTT-Client-Framework
+
+Finished tutorial can be found on the "finished" branch
 
 #Tutorial iOS
 
